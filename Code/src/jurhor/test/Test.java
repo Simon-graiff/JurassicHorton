@@ -28,6 +28,7 @@ public class Test {
 
 				ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(conStr);
 
+				console.log("Connecting...");
 				// Create a Connection
 				Connection connection = connectionFactory.createConnection();
 				connection.start();
@@ -48,7 +49,7 @@ public class Test {
 
 				while (true) {
 					// Wait for a message
-					Message message = consumer.receive(10000);
+					Message message = consumer.receive(1000);
 
 						if (message instanceof TextMessage) {
 							TextMessage textMessage = (TextMessage) message;
