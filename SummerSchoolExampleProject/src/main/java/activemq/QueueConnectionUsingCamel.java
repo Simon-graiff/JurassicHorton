@@ -48,7 +48,7 @@ public class QueueConnectionUsingCamel {
 				@Override
 				public void configure() throws Exception {
 					from("activemq:topic:m_orders")
-					.to("stream:out	");					
+					.to("stream:out");					
 				}
 			});
 			
