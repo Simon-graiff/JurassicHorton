@@ -57,13 +57,18 @@ public class QueueConnection {
 		
 		Session session = null;
 		Destination erpDestination = null; 
+		Destination opcDestination = null; 
+		
+		
 		try {
 			//Create a session
 			session = _con.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			
 			//Define the topic to listen on
 			erpDestination = session.createTopic("m_orders");
-		
+			opcDestination = session.createTopic("m_opcitems"); 
+			
+			
 		} catch (JMSException e) {
 			e.printStackTrace();
 		} 

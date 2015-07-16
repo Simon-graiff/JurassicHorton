@@ -20,7 +20,9 @@ public class OPCDataItem<T> {
      * Default empty constructor needed for JAXB marshalling / unmarshalling
      */
     public OPCDataItem() {
-
+   
+    	
+    	
     }    
     
     public OPCDataItem(T v, String name) {

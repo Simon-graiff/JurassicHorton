@@ -2,6 +2,7 @@ package activemq;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -12,6 +13,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import model.ERPData;
+import model.WorkPiece;
+import model.Workpieces;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +32,8 @@ public class ERPDataListener implements MessageListener {
 	private JAXBContext _ctx;
 	
 	private Unmarshaller _unmarshaller; 
+	
+	/*private ArrayList<WorkPiece> workpieces;*/ 
 
 	/**
 	 * Default Constructor
@@ -46,7 +51,7 @@ public class ERPDataListener implements MessageListener {
 	@Override
 	public void onMessage(Message arg0) {
 		_log.debug("New ERP message arrived!");
-			
+		
 		TextMessage tmpMessage= null; 
 		ERPData tmpData; 
 		if (arg0 instanceof TextMessage) {
@@ -70,6 +75,15 @@ public class ERPDataListener implements MessageListener {
 		tmpData = (ERPData) _unmarshaller.unmarshal(sReader);
 		_log.debug("Object created: " + tmpData.toString());
 		System.out.println(tmpData.getMaterialNumber());
+		
+		//TODO create Workpieces FSM and add it to list
+		//Workpieces.list.add(tmpData)
+		
+		/*for (int i=0;i<workpieces.size();i++) {
+			workpieces.get(i).getFsm().fire(trigger);
+		}*/
+		
+		
 		}
 		catch(Exception fuckYou)
 		{

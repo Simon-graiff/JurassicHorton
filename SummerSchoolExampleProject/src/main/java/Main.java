@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -29,7 +30,7 @@ import stateless4j.TestMachine;
 public class Main {
 
 	Logger _log = 	LogManager.getLogger(Main.class);
-	
+		
 	public static void main(String[] args) {
 		
 		//JAXB Marshalling / Unmarshalling 
