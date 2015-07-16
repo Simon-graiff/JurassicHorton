@@ -28,7 +28,7 @@ public class Test {
 
 				ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(conStr);
 
-				console.log("Connecting...");
+				System.out.println("Connecting...");
 				// Create a Connection
 				Connection connection = connectionFactory.createConnection();
 				connection.start();
