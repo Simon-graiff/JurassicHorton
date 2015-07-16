@@ -63,6 +63,5 @@ public class ERPDataListener implements MessageListener {
 		}
 		
 		//Do something with the erp data! 
-		
 	}
 }

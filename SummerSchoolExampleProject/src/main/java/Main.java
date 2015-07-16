@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -32,23 +34,30 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
+		try {
+			Process p =  Runtime.getRuntime().exec("cmd /c executeSim.bat", null, new File("C:\\Users\\Christian\\Documents\\GitHub\\JurassicHorton"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//JAXB Marshalling / Unmarshalling 
-//		DemoMarshalling demo = new DemoMarshalling(); 
-//		demo.run();
+		DemoMarshalling demo = new DemoMarshalling(); 
+		demo.run();
 		
 		//Message Queue Connection using JMS 
-//		QueueConnection q = new QueueConnection();
+		QueueConnection q = new QueueConnection();
 		
 		//Message Queue Connection using JMS via Apache Camel 
-//		QueueConnectionUsingCamel qc = new QueueConnectionUsingCamel(); 
-//		qc.run();
+		QueueConnectionUsingCamel qc = new QueueConnectionUsingCamel(); 
+		qc.run();
 		
 		// State Machine 
-//		TestMachine t = new TestMachine(); 
-//		t.run(); 
+		TestMachine t = new TestMachine(); 
+		t.run(); 
 	
 		//Esper test 
-//		EsperTest esperTest = new EsperTest(); 
-//		esperTest.run();
+		EsperTest esperTest = new EsperTest(); 
+		esperTest.run();
 	}
 }
