@@ -62,6 +62,19 @@ public class ERPDataListener implements MessageListener {
 			e.printStackTrace();
 		}
 		
+		System.out.println("Jetzt unmarshaling");
+		
+		try{	
+			System.out.println("in try catch");
+		StringReader sReader = new StringReader(tmpMessage.getText()); 
+		tmpData = (ERPData) _unmarshaller.unmarshal(sReader);
+		_log.debug("Object created: " + tmpData.toString());
+		System.out.println(tmpData.getMaterialNumber());
+		}
+		catch(Exception fuckYou)
+		{
+			fuckYou.printStackTrace();
+		}
 		//Do something with the erp data! 
 		
 	}
