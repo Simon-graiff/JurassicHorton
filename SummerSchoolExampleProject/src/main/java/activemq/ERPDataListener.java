@@ -48,7 +48,7 @@ public class ERPDataListener implements MessageListener {
 		_log.debug("New ERP message arrived!");
 			
 		TextMessage tmpMessage= null; 
-		ERPData tmpData; 
+		ERPData tmpData = null; 
 		if (arg0 instanceof TextMessage) {
 			tmpMessage = (TextMessage)arg0; 
 		} else {
@@ -58,9 +58,20 @@ public class ERPDataListener implements MessageListener {
 		
 		try {
 			_log.debug(tmpMessage.getText());
+			System.out.println("Halo du spast");
+			try{
+			int customerNumer = tmpData.getCustomerNumber();
+			_log.debug("Customer Number"+customerNumer);
+			}
+			catch(Exception e1)
+			{
+				e1.printStackTrace();
+			}
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
+		
+		
 		
 		//Do something with the erp data! 
 	}
