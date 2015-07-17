@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.scheduling.Trigger;
 
@@ -13,13 +14,13 @@ import stateless4j.Triggers;
 public class WorkPiece {
 
 	private StateMachine<PartStates, Triggers> fsm;
-	
+
 	private StateMachineConfig<PartStates, Triggers> fsmc;
-	
+
 	private ERPData ERPData = null;
-	
+
 	private ArrayList<OPCDataItem> OPCDataItemList;
-	
+
 	public ERPData getERPData() {
 		return ERPData;
 	}
@@ -36,8 +37,7 @@ public class WorkPiece {
 		OPCDataItemList = oPCDataItemList;
 	}
 
-	public WorkPiece(ERPData data)
-	{
+	public WorkPiece(ERPData data) {
 		configure();
 		fsm = new StateMachine<PartStates, Triggers>(PartStates.INIT, fsmc);
 		ERPData = data;
@@ -49,28 +49,58 @@ public class WorkPiece {
 
 	public void setFsm(StateMachine<PartStates, Triggers> fsm) {
 		this.fsm = fsm;
-	} 
-	
-	public void configure()
-	{
+	}
+
+	public void configure() {
 		fsmc = new StateMachineConfig<PartStates, Triggers>();
-		
-		fsmc.configure(PartStates.INIT)
-		.permit(Triggers.L1_FALSE, PartStates.L1_IN)
-		.onEntry(this::doSomething);
-		
-		fsmc.configure(PartStates.L1_IN)
-		.permit(Triggers.L1_TRUE, PartStates.L1_OUT);
+
+		fsmc.configure(PartStates.INIT).permit(Triggers.L1_FALSE, PartStates.L1_IN).ignore(null)
+				.onEntry(this::doSomething);
+
+		fsmc.configure(PartStates.L1_IN).ignore(null).permit(Triggers.L1_TRUE, PartStates.L1_OUT);
+
+		fsmc.configure(PartStates.L1_OUT).ignore(null).permit(Triggers.L2_FALSE, PartStates.L2_IN);
+
+		fsmc.configure(PartStates.L2_IN).ignore(null).permit(Triggers.L2_TRUE, PartStates.L2_OUT);
+
+		fsmc.configure(PartStates.L2_OUT).ignore(null).permit(Triggers.L3_FALSE, PartStates.L3_IN);
+
+		fsmc.configure(PartStates.L3_IN).ignore(null).permit(Triggers.MILLING_ON, PartStates.MILLING_ON);
+
+		fsmc.configure(PartStates.MILLING_ON).ignore(null).permit(Triggers.MILLING_OFF, PartStates.MILLING_OFF);
+
+		fsmc.configure(PartStates.MILLING_OFF).ignore(null).permit(Triggers.L3_TRUE, PartStates.L3_OUT);
+
+		fsmc.configure(PartStates.L3_OUT).ignore(null).permit(Triggers.L4_FALSE, PartStates.L4_IN);
+
+		fsmc.configure(PartStates.L4_IN).ignore(null).permit(Triggers.DRILLING_ON, PartStates.DRILLING_ON);
+
+		fsmc.configure(PartStates.DRILLING_ON).ignore(null).permit(Triggers.DRILLING_OFF, PartStates.DRILLING_OFF);
+
+		fsmc.configure(PartStates.DRILLING_OFF).ignore(null).permit(Triggers.L4_TRUE, PartStates.L4_OUT);
+
+		fsmc.configure(PartStates.L4_OUT).ignore(null).permit(Triggers.L5_FALSE, PartStates.L5);
+
+		fsmc.configure(PartStates.L5).ignore(null).permit(Triggers.L5_TRUE, PartStates.FINISHED).onExit(this::finish);
 
 	}
 
-	public void doSomething()
-	{
+	public void finish() {
+		List<WorkPiece> list = WorkPieceList.list;
+		if (list.size() > 1) {
+			list.add(0, list.get(1));
+			list.remove(1);
+		}
+		list.remove(0);
+		
+
+		System.out.println("*****************************************");
+		System.out.println(ERPData.getOrderNumber() + " is finished");
+		System.out.println("*****************************************");
+	}
+
+	public void doSomething() {
 		System.out.println("Holla");
 	}
-	
-	
-	
-	
-	
+
 }

@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -31,6 +33,13 @@ public class Main {
 	Logger _log = 	LogManager.getLogger(Main.class);
 		
 	public static void main(String[] args) {
+		
+		/*try {
+			Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", ".\\src\\main\\ressources\\executeSim.bat"});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		
 		//JAXB Marshalling / Unmarshalling 
 //		DemoMarshalling demo = new DemoMarshalling(); 

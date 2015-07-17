@@ -174,8 +174,6 @@ public class OPCDataListener implements MessageListener {
 			}
 		  }
 		
-		System.out.println("Daten: "+ itemName+" "+ Boolean.toString(value));
-		
 		}
 		catch(Exception fuckYou)
 		{
