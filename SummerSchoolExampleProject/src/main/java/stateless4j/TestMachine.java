@@ -52,7 +52,7 @@ public class TestMachine {
 	private void configure() {
 		fsmc = new StateMachineConfig<PartStates, Triggers>(); 
 		
-		fsmc.configure(PartStates.INIT)
+	/*	fsmc.configure(PartStates.INIT)
 		.permit(Triggers.DRILLING_ON, PartStates.DRILLING)
 		.permit(Triggers.MILLING_ON, PartStates.MILLING); 
 		
@@ -68,7 +68,7 @@ public class TestMachine {
 		.ignore(Triggers.DRILLING_ON)
 		.ignore(Triggers.DRILLING_OFF)
 		.ignore(Triggers.MILLING_ON)
-		.onEntry(this::increaseMillingCounter);
+		.onEntry(this::increaseMillingCounter);*/
 	}
 
 	/**
