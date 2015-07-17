@@ -34,12 +34,13 @@ public class Main {
 		
 	public static void main(String[] args) {
 		
-		/*try {
-			Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", ".\\src\\main\\ressources\\executeSim.bat"});
+		try {
+			Runtime rt = Runtime.getRuntime();
+			rt.exec("CMD /C start executeSim.bat");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		
 		//JAXB Marshalling / Unmarshalling 
 //		DemoMarshalling demo = new DemoMarshalling(); 
