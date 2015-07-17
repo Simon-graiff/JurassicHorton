@@ -78,85 +78,21 @@ public class OPCDataListener implements MessageListener {
 			tmpData = (OPCDataItem) _unmarshaller.unmarshal(sReader);
 			_log.debug("OPC Object created: " + tmpData.toString());
 
-			String itemName = tmpData.getItemName();
+			List<WorkPiece> list = WorkPieceList.list;
 
-			if (itemName.equals("Milling Heat") || itemName.equals("Milling Speed") || itemName.equals("Drilling Heat")
-					|| itemName.equals("Drilling Speed")) {
+			synchronized (list) {
+				for (int i = 0; i < list.size(); i++) {
+					System.out.println("State before move: " + list.get(i).getFsm().getState());
+					list.get(i).handleOPCDataItem(tmpData);
 
-			} else {
-				Boolean value = null;
-				value = (Boolean) tmpData.getValue();
-
-				Triggers trigger = null;
-
-				switch (itemName) {
-				case "Lichtschranke 1":
-					if (value == true) {
-						trigger = Triggers.L1_TRUE;
+					if (list.size() > 0) {
+						System.out.println("State after move: " + list.get(i).getFsm().getState());
 					} else {
-						trigger = Triggers.L1_FALSE;
-					}
-					break;
-				case "Lichtschranke 2":
-					if (value == true) {
-						trigger = Triggers.L2_TRUE;
-					} else {
-						trigger = Triggers.L2_FALSE;
-					}
-					break;
-				case "Lichtschranke 3":
-					if (value == true) {
-						trigger = Triggers.L3_TRUE;
-					} else {
-						trigger = Triggers.L3_FALSE;
-					}
-					break;
-				case "Lichtschranke 4":
-					if (value == true) {
-						trigger = Triggers.L4_TRUE;
-					} else {
-						trigger = Triggers.L4_FALSE;
-					}
-					break;
-				case "Lichtschranke 5":
-					if (value == true) {
-						trigger = Triggers.L5_TRUE;
-					} else {
-						trigger = Triggers.L5_FALSE;
-					}
-					break;
-				case "Milling Station":
-					if (value == true) {
-						trigger = Triggers.MILLING_ON;
-					} else {
-						trigger = Triggers.MILLING_OFF;
-					}
-					break;
-				case "Drilling Station":
-					if (value == true) {
-						trigger = Triggers.DRILLING_ON;
-					} else {
-						trigger = Triggers.DRILLING_OFF;
-					}
-					break;
-				}
-
-				System.out.println("Trigger Value: " + trigger);
-
-				List<WorkPiece> list = WorkPieceList.list;
-
-				synchronized (list) {
-					for (int i = 0; i < list.size(); i++) {
-						System.out.println("State before move: " + list.get(i).getFsm().getState());
-						list.get(i).getFsm().fire(trigger);
-						if (list.size()>0) {
-							System.out.println("State after move: " + list.get(i).getFsm().getState());
-						} else {
-						}
 					}
 				}
-
 			}
+
+			// }
 		} catch (Exception fuckYou) {
 			fuckYou.printStackTrace();
 		}
