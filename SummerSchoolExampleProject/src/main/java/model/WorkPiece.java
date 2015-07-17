@@ -86,11 +86,18 @@ public class WorkPiece {
 
 	public void finish() {
 		List<WorkPiece> list = WorkPieceList.list;
+		System.out.println("Size of list "+list.size());
+		if(list.size()==1)
+		{
+			list.remove(0);
+		}
+		/*
 		if (list.size() > 1) {
 			list.add(0, list.get(1));
 			list.remove(1);
-		}
-		list.remove(0);
+		} else {
+			list.remove(0);
+		}*/
 
 		System.out.println("*****************************************");
 		System.out.println(ERPData.getOrderNumber() + " is finished");

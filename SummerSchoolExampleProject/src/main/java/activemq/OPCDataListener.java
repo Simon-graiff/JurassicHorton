@@ -18,6 +18,7 @@ import model.ERPData;
 import model.OPCDataItem;
 import model.WorkPiece;
 import model.WorkPieceList;
+import stateless4j.PartStates;
 import stateless4j.Triggers;
 
 import org.apache.logging.log4j.LogManager;
@@ -67,7 +68,7 @@ public class OPCDataListener implements MessageListener {
 		}
 
 		try {
-			_log.debug("OPCDataMessage: "+tmpMessage.getText());
+			_log.debug("OPCDataMessage: " + tmpMessage.getText());
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
@@ -146,9 +147,12 @@ public class OPCDataListener implements MessageListener {
 
 				synchronized (list) {
 					for (int i = 0; i < list.size(); i++) {
-						System.out.println("State before move: "+list.get(i).getFsm().getState());
+						System.out.println("State before move: " + list.get(i).getFsm().getState());
 						list.get(i).getFsm().fire(trigger);
-						System.out.println("State after move: "+list.get(i).getFsm().getState());
+						if (list.size()>0) {
+							System.out.println("State after move: " + list.get(i).getFsm().getState());
+						} else {
+						}
 					}
 				}
 
