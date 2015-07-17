@@ -37,6 +37,13 @@ public class Main {
 		try {
 			Runtime rt = Runtime.getRuntime();
 			rt.exec("CMD /C start executeSim.bat");
+			System.out.println("Waiting for Simulation to be started for 1 second");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
