@@ -14,78 +14,77 @@ import org.apache.logging.log4j.Logger;
 public class QueueConnection {
 
 	/**
-	 * connection factory 
+	 * connection factory
 	 */
-	private ConnectionFactory _conFac; 
-	
+	private ConnectionFactory _conFac;
+
 	/**
 	 * Queue connection
 	 */
 	private Connection _con;
-	
+
 	/**
-	 * Log instance 
+	 * Log instance
 	 */
-	private Logger _log; 
-	
-	
+	private Logger _log;
+
 	/**
-	 * Default Constructor 
+	 * Default Constructor
 	 */
 	public QueueConnection() {
-		_log = LogManager.getLogger(QueueConnection.class); 
+		_log = LogManager.getLogger(QueueConnection.class);
 		_log.debug("Creating queue connection ...");
-		
-		//Create a queue connection via JMS 
+
+		// Create a queue connection via JMS
 		_conFac = new ActiveMQConnectionFactory("tcp://localhost:61616");
-		
+
 		try {
 			_con = _conFac.createConnection();
 		} catch (JMSException e) {
 			_log.error(e.getMessage());
 		}
-		
-		//Listen for incoming items 
+
+		// Listen for incoming items
 		listen();
 	}
 
 	/**
-	 * Listen for incoming items 
+	 * Listen for incoming items
 	 */
-	private void listen()  {
+	private void listen() {
 		_log.debug("Listening to queue.");
-		
+
 		Session session = null;
-		Destination erpDestination = null; 
-		Destination opcDestination = null; 
-		
-		
+		Destination erpDestination = null;
+		Destination opcDestination = null;
+
 		try {
-			//Create a session
+			// Create a session
 			session = _con.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			
-			//Define the topic to listen on
+
+			// Define the topic to listen on
 			erpDestination = session.createTopic("m_orders");
-			opcDestination = session.createTopic("m_opcitems"); 
-			
-			
+			opcDestination = session.createTopic("m_opcitems");
+
 		} catch (JMSException e) {
 			e.printStackTrace();
-		} 
-		
-		//Create a message consumer using a custom ERP Data Listener 
-		MessageConsumer consumerERP; 
+		}
+
+		// Create a message consumer using a custom ERP Data Listener
+		MessageConsumer consumerERP;
+		MessageConsumer consumerOPC;
 		try {
-			
-			consumerERP = session.createConsumer(erpDestination); 
+
+			consumerERP = session.createConsumer(erpDestination);
 			consumerERP.setMessageListener(new ERPDataListener());
-		
-			//Start listening on the connection.
+			consumerOPC = session.createConsumer(opcDestination);
+			consumerOPC.setMessageListener(new OPCDataListener());
+			// Start listening on the connection.
 			_con.start();
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
-		
+
 		_log.debug("Listener active.");
-	}	
+	}
 }

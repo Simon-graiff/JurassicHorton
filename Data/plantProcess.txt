@@ -1,0 +1,291 @@
+19:57:53.638 [ActiveMQ Session Task-1] DEBUG activemq.ERPDataListener - New ERP message arrived!
+19:57:53.638 [ActiveMQ Session Task-1] DEBUG activemq.ERPDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<erpData>
+    <customerNumber>4715</customerNumber>
+    <materialNumber>4248</materialNumber>
+    <orderNumber>16697fec-a6b4-4371-bcf5-2405a7f65463</orderNumber>
+    <timeStamp>2015-07-16T19:57:53.638-04:00</timeStamp>
+</erpData>
+
+Jetzt unmarshaling
+in try catch
+19:57:53.650 [ActiveMQ Session Task-1] DEBUG activemq.ERPDataListener - Object created: model.ERPData@32a9b8af
+4248
+19:57:54.641 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:57:54.641 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 1</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091074641</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">false</value>
+</OpcDataItem>
+
+19:57:56.642 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:57:56.642 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 1</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091076642</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</value>
+</OpcDataItem>
+
+19:58:02.655 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:02.655 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 2</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091082655</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">false</value>
+</OpcDataItem>
+
+19:58:04.658 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:04.658 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 2</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091084658</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</value>
+</OpcDataItem>
+
+19:58:10.673 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:10.673 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 3</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091090673</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">false</value>
+</OpcDataItem>
+
+19:58:12.677 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:12.677 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Station</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091092677</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</value>
+</OpcDataItem>
+
+19:58:12.680 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:12.680 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Speed</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091092677</timestamp>
+    <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">9850</value>
+</OpcDataItem>
+
+19:58:16.685 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:16.685 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091096685</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">112.74</value>
+</OpcDataItem>
+
+19:58:20.695 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:20.695 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091100695</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">129.65099999999998</value>
+</OpcDataItem>
+
+19:58:23.698 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:23.698 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Speed</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091103698</timestamp>
+    <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">11500</value>
+</OpcDataItem>
+
+19:58:23.701 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:23.701 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091103698</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">169.10999999999999</value>
+</OpcDataItem>
+
+19:58:26.706 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:26.706 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091106706</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">157.83599999999998</value>
+</OpcDataItem>
+
+19:58:30.710 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:30.710 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Speed</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091110710</timestamp>
+    <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0</value>
+</OpcDataItem>
+
+19:58:30.713 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:30.713 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091110710</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">106.86</value>
+</OpcDataItem>
+
+19:58:32.727 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:32.727 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091112727</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">39.769999999999996</value>
+</OpcDataItem>
+
+19:58:32.730 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:32.730 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Milling Station</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091112727</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">false</value>
+</OpcDataItem>
+
+19:58:35.735 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:35.735 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 3</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091115735</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</value>
+</OpcDataItem>
+
+19:58:39.743 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:39.743 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 4</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091119743</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">false</value>
+</OpcDataItem>
+
+19:58:42.745 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:42.745 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Station</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091122745</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</value>
+</OpcDataItem>
+
+19:58:42.748 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:42.748 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Speed</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091122745</timestamp>
+    <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">11280</value>
+</OpcDataItem>
+
+19:58:46.758 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:46.758 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091126758</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">103.92</value>
+</OpcDataItem>
+
+19:58:49.760 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:49.760 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091129760</timestamp
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">119.508</value>
+</OpcDataItem>
+
+19:58:53.765 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:53.765 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Speed</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091133765</timestamp>
+    <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">14980</value>
+</OpcDataItem>
+
+19:58:53.768 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:53.768 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091133765</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">155.88</value>
+</OpcDataItem>
+
+19:58:56.769 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:56.769 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091136769</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">145.488</value>
+</OpcDataItem>
+
+19:58:59.774 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:59.774 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Speed</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091139774</timestamp>
+    <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0</value>
+</OpcDataItem>
+
+19:58:59.777 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:59.777 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Heat</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091139774</timestamp>
+    <value xsi:type="xs:double" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">111.76</value>
+</OpcDataItem>
+
+19:58:59.777 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:58:59.777 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Drilling Station</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091139777</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">false</value>
+</OpcDataItem>
+
+19:59:01.777 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:59:01.777 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 4</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091141777</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</value>
+</OpcDataItem>
+19:59:10.788 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:59:10.788 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 5</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091150788</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">false</value>
+</OpcDataItem>
+
+19:59:12.795 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - New OPC message arrived!
+19:59:12.795 [ActiveMQ Session Task-1] DEBUG activemq.OPCDataListener - <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OpcDataItem>
+    <itemName>Lichtschranke 5</itemName>
+    <status>GOOD</status>
+    <timestamp>1437091152795</timestamp>
+    <value xsi:type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</value>
+</OpcDataItem>
+

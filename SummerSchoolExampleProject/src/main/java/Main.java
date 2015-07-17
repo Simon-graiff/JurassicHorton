@@ -18,7 +18,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import esper.EsperTest;
 import activemq.QueueConnection;
-import activemq.QueueConnectionUsingCamel;
 import stateless4j.TestMachine;
 
 
@@ -39,10 +38,6 @@ public class Main {
 		
 		//Message Queue Connection using JMS 
 		QueueConnection q = new QueueConnection();
-		
-		//Message Queue Connection using JMS via Apache Camel 
-		//QueueConnectionUsingCamel qc = new QueueConnectionUsingCamel(); 
-		//qc.run();
 		
 		// State Machine 
 //		TestMachine t = new TestMachine(); 
