@@ -168,7 +168,9 @@ public class OPCDataListener implements MessageListener {
 		synchronized(list) {
 			for(int i=0; i<list.size();i++)
 			{
+				System.out.println(list.get(i).getFsm().getState());
 				list.get(i).getFsm().fire(trigger);
+				System.out.println(list.get(i).getFsm().getState());
 			}
 		  }
 		
