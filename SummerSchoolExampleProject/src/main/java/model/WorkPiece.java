@@ -54,8 +54,7 @@ public class WorkPiece {
 	public void configure() {
 		fsmc = new StateMachineConfig<PartStates, Triggers>();
 
-		fsmc.configure(PartStates.INIT).permit(Triggers.L1_FALSE, PartStates.L1_IN).ignore(null)
-				.onEntry(this::doSomething);
+		fsmc.configure(PartStates.INIT).permit(Triggers.L1_FALSE, PartStates.L1_IN).ignore(null);
 
 		fsmc.configure(PartStates.L1_IN).ignore(null).permit(Triggers.L1_TRUE, PartStates.L1_OUT);
 
@@ -92,15 +91,10 @@ public class WorkPiece {
 			list.remove(1);
 		}
 		list.remove(0);
-		
 
 		System.out.println("*****************************************");
 		System.out.println(ERPData.getOrderNumber() + " is finished");
 		System.out.println("*****************************************");
-	}
-
-	public void doSomething() {
-		System.out.println("Holla");
 	}
 
 }
