@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import model.ERPData;
+import model.OPCDataItem;
 import model.WorkPiece;
 import model.Workpieces;
 
@@ -40,7 +41,7 @@ public class OPCDataListener implements MessageListener {
 	 */
 	public OPCDataListener()  {
 		try {
-			_ctx = JAXBContext.newInstance(ERPData.class);
+			_ctx = JAXBContext.newInstance(OPCDataItem.class);
 			_unmarshaller = _ctx.createUnmarshaller();
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -53,7 +54,7 @@ public class OPCDataListener implements MessageListener {
 		_log.debug("New OPC message arrived!");
 		
 		TextMessage tmpMessage= null; 
-		ERPData tmpData; 
+		OPCDataItem tmpData; 
 		if (arg0 instanceof TextMessage) {
 			tmpMessage = (TextMessage)arg0; 
 		} else {
@@ -67,15 +68,15 @@ public class OPCDataListener implements MessageListener {
 			e.printStackTrace();
 		}
 		
-		/*
-		System.out.println("Jetzt unmarshaling");
+		
+		System.out.println("Jetzt unmarshaling OPC");
 		
 		try{	
-			System.out.println("in try catch");
+			System.out.println("in try catch OPC");
 		StringReader sReader = new StringReader(tmpMessage.getText()); 
-		tmpData = (ERPData) _unmarshaller.unmarshal(sReader);
+		tmpData = (OPCDataItem) _unmarshaller.unmarshal(sReader);
 		_log.debug("Object created: " + tmpData.toString());
-		System.out.println(tmpData.getMaterialNumber());
+		System.out.println(tmpData.getItemName());
 		
 		//TODO create Workpieces FSM and add it to list
 		//Workpieces.list.add(tmpData)
@@ -83,16 +84,13 @@ public class OPCDataListener implements MessageListener {
 		/*for (int i=0;i<workpieces.size();i++) {
 			workpieces.get(i).getFsm().fire(trigger);
 		}*/
-		/*
+		
 		
 		}
 		catch(Exception fuckYou)
 		{
 			fuckYou.printStackTrace();
 		}
-		//Do something with the erp data! 
-		 * 
-		 */
 		
 	}
 }
