@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-public class Workpieces {
+public class WorkPieceList {
 
 	public static ArrayList<WorkPiece> list; 
 	

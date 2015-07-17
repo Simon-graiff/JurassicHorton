@@ -15,7 +15,7 @@ import javax.xml.bind.Unmarshaller;
 import model.ERPData;
 import model.OPCDataItem;
 import model.WorkPiece;
-import model.Workpieces;
+import model.WorkPieceList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
