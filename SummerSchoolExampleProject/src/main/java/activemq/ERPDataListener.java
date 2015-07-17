@@ -76,14 +76,13 @@ public class ERPDataListener implements MessageListener {
 		_log.debug("Object created: " + tmpData.toString());
 		System.out.println(tmpData.getMaterialNumber());
 		
-		//TODO create Workpieces FSM and add it to list
-		//Workpieces.list.add(tmpData)
+		WorkPiece tmpWorkPiece = new WorkPiece(tmpData);
+		WorkPieceList.list.add(tmpWorkPiece);
 		
 		/*for (int i=0;i<workpieces.size();i++) {
 			workpieces.get(i).getFsm().fire(trigger);
 		}*/
-		
-		
+				
 		}
 		catch(Exception fuckYou)
 		{

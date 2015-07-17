@@ -6,6 +6,6 @@ import java.util.List;
 
 public class WorkPieceList {
 
-	List<WorkPiece> list = Collections.synchronizedList(new ArrayList<WorkPiece>());
+	public static List<WorkPiece> list = Collections.synchronizedList(new ArrayList<WorkPiece>());
 	
 }
