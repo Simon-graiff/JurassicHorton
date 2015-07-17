@@ -92,7 +92,7 @@ public class OPCDataListener implements MessageListener {
 			System.out.println("Boolean conversion error " + e.toString());
 		}
 		
-		Enum trigger = null;
+		Triggers trigger = null;
 		
 		switch(itemName)
 		{
@@ -163,25 +163,16 @@ public class OPCDataListener implements MessageListener {
 		
 		System.out.println("Trigger Value: "+trigger);
 		
-		/*
 		List<WorkPiece> list = WorkPieceList.list;
 		
 		synchronized(list) {
 			for(int i=0; i<list.size();i++)
 			{
-				list.get(i).getFsm().fire();
+				list.get(i).getFsm().fire(trigger);
 			}
 		  }
-		*/
 		
 		System.out.println("Daten: "+ itemName+" "+ Boolean.toString(value));
-		//TODO create Workpieces FSM and add it to list
-		//Workpieces.list.add(tmpData)
-		
-		/*for (int i=0;i<workpieces.size();i++) {
-			workpieces.get(i).getFsm().fire(trigger);
-		}*/
-		
 		
 		}
 		catch(Exception fuckYou)
