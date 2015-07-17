@@ -23,6 +23,9 @@ public class WorkPiece {
 
 	private OPCDataItem tmpData = null;
 
+	private ArrayList<Double> millingHeatList;
+	private ArrayList<Integer> millingSpeedList;
+
 	public ERPData getERPData() {
 		return ERPData;
 	}
@@ -44,6 +47,9 @@ public class WorkPiece {
 		fsm = new StateMachine<PartStates, Triggers>(PartStates.INIT, fsmc);
 		ERPData = data;
 		OPCDataItemList = new ArrayList<OPCDataItem>();
+		
+		millingHeatList = new ArrayList<Double>();
+		millingSpeedList = new ArrayList<Integer>();
 	}
 
 	public StateMachine<PartStates, Triggers> getFsm() {
@@ -104,7 +110,7 @@ public class WorkPiece {
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.MILLING_OFF, PartStates.MILLING_OFF)
-				.onEntry(this::saveToOPCDataItemList);
+				.permitReentry(Triggers.MILLING).onEntry(this::handleMilling).onEntry(this::saveToOPCDataItemList);
 
 		fsmc.configure(PartStates.MILLING_OFF).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
@@ -168,18 +174,43 @@ public class WorkPiece {
 		 * else { list.remove(0); }
 		 */
 		System.out.println("Data of the OPCDataItem:\n");
-		for(int i = 0; i < OPCDataItemList.size(); i++)
-		{
-			System.out.print(OPCDataItemList.get(i).getItemName()+" "+OPCDataItemList.get(i).getTimestamp()+"\n");
+		for (int i = 0; i < OPCDataItemList.size(); i++) {
+			System.out.print(OPCDataItemList.get(i).getItemName() + " " + OPCDataItemList.get(i).getTimestamp() + "\n");
 		}
 
 		System.out.println("*****************************************");
 		System.out.println(ERPData.getOrderNumber() + " is finished");
 		System.out.println("*****************************************");
+		
+		
+		System.out.print("\n********\nSpeed:\n");
+		for(int i = 0; i<millingSpeedList.size();i++)
+		{
+			System.out.print(millingSpeedList.get(i)+" ");
+		}
+		System.out.print("\n********\nHeat:\n");
+		for(int i = 0; i < millingHeatList.size();i++)
+		{
+			System.out.print(millingHeatList.get(i)+" ");
+		}
+		System.out.println("***********************");
 	}
 
 	public void saveToOPCDataItemList() {
 		OPCDataItemList.add(tmpData);
+	}
+
+	public void handleMilling() {
+		System.out.println("*************" + tmpData.getItemName());
+		if (tmpData.getItemName().equals("Milling Speed")) {
+			millingSpeedList.add((int) tmpData.getValue());
+			System.out.println("****************************************************************");
+			System.out.println(tmpData.getValue());
+		} else if (tmpData.getItemName().equals("Milling Heat")) {
+			System.out.println("****************************************************************");
+			millingHeatList.add((double) tmpData.getValue());
+			System.out.println(tmpData.getValue());
+		}
 	}
 
 	public void handleOPCDataItem(OPCDataItem tmpData) {
@@ -187,18 +218,22 @@ public class WorkPiece {
 		this.tmpData = tmpData;
 
 		String itemName = tmpData.getItemName();
+		Triggers trigger = null;
 
 		if (itemName.equals("Milling Heat") || itemName.equals("Milling Speed") || itemName.equals("Drilling Heat")
 				|| itemName.equals("Drilling Speed")) {
-
-			// Stuff to do with the values of Milling/Drilling Heat/Speed ->
-			// Maybe Ignore?
+			switch (itemName) {
+			case "Milling Speed":
+				trigger = Triggers.MILLING;
+				break;
+			case "Milling Heat":
+				trigger = Triggers.MILLING;
+				break;
+			}
 
 		} else {
 			Boolean value = null;
 			value = (Boolean) tmpData.getValue();
-
-			Triggers trigger = null;
 
 			switch (itemName) {
 			case "Lichtschranke 1":
@@ -251,9 +286,9 @@ public class WorkPiece {
 				}
 				break;
 			}
-			System.out.println("Trigger Value: " + trigger);
-			fsm.fire(trigger);
 		}
+		System.out.println("Trigger Value: " + trigger);
+		fsm.fire(trigger);
 
 	}
 

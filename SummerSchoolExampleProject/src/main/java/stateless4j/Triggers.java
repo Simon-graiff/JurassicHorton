@@ -15,5 +15,6 @@ public enum Triggers {
 	DRILLING_OFF,
 	L4_TRUE,
 	L5_FALSE,
-	L5_TRUE
+	L5_TRUE,
+	MILLING
 }
