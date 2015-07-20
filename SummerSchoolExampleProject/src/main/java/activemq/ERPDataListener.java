@@ -30,15 +30,15 @@ public class ERPDataListener implements MessageListener {
 	private Logger _log = LogManager.getLogger(ERPDataListener.class);
 
 	private JAXBContext _ctx;
-	
-	private Unmarshaller _unmarshaller; 
-	
-	/*private ArrayList<WorkPiece> workpieces;*/ 
+
+	private Unmarshaller _unmarshaller;
+
+	/* private ArrayList<WorkPiece> workpieces; */
 
 	/**
 	 * Default Constructor
 	 */
-	public ERPDataListener()  {
+	public ERPDataListener() {
 		try {
 			_ctx = JAXBContext.newInstance(ERPData.class);
 			_unmarshaller = _ctx.createUnmarshaller();
@@ -50,45 +50,40 @@ public class ERPDataListener implements MessageListener {
 
 	@Override
 	public void onMessage(Message arg0) {
-		_log.debug("New ERP message arrived!");
-		
-		TextMessage tmpMessage= null; 
-		ERPData tmpData; 
+		// _log.debug("New ERP message arrived!");
+
+		TextMessage tmpMessage = null;
+		ERPData tmpData;
 		if (arg0 instanceof TextMessage) {
-			tmpMessage = (TextMessage)arg0; 
+			tmpMessage = (TextMessage) arg0;
 		} else {
 			_log.warn("Unknown format, marshalling aborted.");
 			return;
 		}
-		
+
+		/*
+		 * try { _log.debug(tmpMessage.getText()); } catch (JMSException e) {
+		 * e.printStackTrace(); }
+		 */
+
 		try {
-			_log.debug(tmpMessage.getText());
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println("Jetzt unmarshaling");
-		
-		try{	
-			System.out.println("in try catch");
-		StringReader sReader = new StringReader(tmpMessage.getText()); 
-		tmpData = (ERPData) _unmarshaller.unmarshal(sReader);
-		_log.debug("Object created: " + tmpData.toString());
-		System.out.println(tmpData.getMaterialNumber());
-		
-		WorkPiece tmpWorkPiece = new WorkPiece(tmpData);
-		WorkPieceList.list.add(tmpWorkPiece);
-		
-		/*for (int i=0;i<workpieces.size();i++) {
-			workpieces.get(i).getFsm().fire(trigger);
-		}*/
-				
-		}
-		catch(Exception fuckYou)
-		{
+			StringReader sReader = new StringReader(tmpMessage.getText());
+			tmpData = (ERPData) _unmarshaller.unmarshal(sReader);
+			//_log.debug("Object created: " + tmpData.toString());
+			System.out.println(tmpData.getMaterialNumber());
+
+			WorkPiece tmpWorkPiece = new WorkPiece(tmpData);
+			WorkPieceList.list.add(tmpWorkPiece);
+
+			/*
+			 * for (int i=0;i<workpieces.size();i++) {
+			 * workpieces.get(i).getFsm().fire(trigger); }
+			 */
+
+		} catch (Exception fuckYou) {
 			fuckYou.printStackTrace();
 		}
-		//Do something with the erp data! 
-		
+		// Do something with the erp data!
+
 	}
 }

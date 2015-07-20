@@ -26,6 +26,9 @@ public class WorkPiece {
 	private ArrayList<Double> millingHeatList;
 	private ArrayList<Integer> millingSpeedList;
 
+	private ArrayList<Double> drillingHeatList;
+	private ArrayList<Integer> drillingSpeedList;
+
 	public ERPData getERPData() {
 		return ERPData;
 	}
@@ -47,9 +50,12 @@ public class WorkPiece {
 		fsm = new StateMachine<PartStates, Triggers>(PartStates.INIT, fsmc);
 		ERPData = data;
 		OPCDataItemList = new ArrayList<OPCDataItem>();
-		
+
 		millingHeatList = new ArrayList<Double>();
 		millingSpeedList = new ArrayList<Integer>();
+		
+		drillingHeatList = new ArrayList<Double>();
+		drillingSpeedList = new ArrayList<Integer>();
 	}
 
 	public StateMachine<PartStates, Triggers> getFsm() {
@@ -138,7 +144,8 @@ public class WorkPiece {
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE)
-				.permit(Triggers.DRILLING_OFF, PartStates.DRILLING_OFF).onEntry(this::saveToOPCDataItemList);
+				.permit(Triggers.DRILLING_OFF, PartStates.DRILLING_OFF).permitReentry(Triggers.DRILLING)
+				.onEntry(this::handleDrilling).onEntry(this::saveToOPCDataItemList);
 
 		fsmc.configure(PartStates.DRILLING_OFF).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
@@ -165,7 +172,7 @@ public class WorkPiece {
 
 	public void finish() {
 		List<WorkPiece> list = WorkPieceList.list;
-		System.out.println("Size of list " + list.size());
+		//System.out.println("Size of list " + list.size());
 		if (list.size() == 1) {
 			list.remove(0);
 		}
@@ -173,27 +180,33 @@ public class WorkPiece {
 		 * if (list.size() > 1) { list.add(0, list.get(1)); list.remove(1); }
 		 * else { list.remove(0); }
 		 */
+		
+		/*
 		System.out.println("Data of the OPCDataItem:\n");
 		for (int i = 0; i < OPCDataItemList.size(); i++) {
 			System.out.print(OPCDataItemList.get(i).getItemName() + " " + OPCDataItemList.get(i).getTimestamp() + "\n");
-		}
+		}*/
 
 		System.out.println("*****************************************");
 		System.out.println(ERPData.getOrderNumber() + " is finished");
-		System.out.println("*****************************************");
-		
-		
-		System.out.print("\n********\nSpeed:\n");
-		for(int i = 0; i<millingSpeedList.size();i++)
-		{
-			System.out.print(millingSpeedList.get(i)+" ");
+
+		/*System.out.print("\n********\nSpeed:\n");
+		for (int i = 0; i < millingSpeedList.size(); i++) {
+			System.out.print(millingSpeedList.get(i) + " ");
 		}
 		System.out.print("\n********\nHeat:\n");
-		for(int i = 0; i < millingHeatList.size();i++)
-		{
-			System.out.print(millingHeatList.get(i)+" ");
-		}
-		System.out.println("***********************");
+		for (int i = 0; i < millingHeatList.size(); i++) {
+			System.out.print(millingHeatList.get(i) + " ");
+		}*/
+		System.out.println("AVG Milling heat: " + calcAvg(drillingHeatList));
+		System.out.println("AVG milling speed: " + calcAvg(drillingSpeedList));
+		System.out.println("AVG Drilling heat: " + calcAvg(millingHeatList));
+		System.out.println("AVG Drilling Speed: " + calcAvg(drillingSpeedList));
+		System.out.println("Total time "+ getTotalTime(OPCDataItemList));
+		System.out.println("ERPData **************\nCustomer Number "+ERPData.getCustomerNumber());
+		System.out.println("Material Number "+ERPData.getMaterialNumber());
+		System.out.println("Order Number "+ERPData.getOrderNumber());		
+		System.out.println("***************** END OF PRODUCT************************");
 	}
 
 	public void saveToOPCDataItemList() {
@@ -201,16 +214,50 @@ public class WorkPiece {
 	}
 
 	public void handleMilling() {
-		System.out.println("*************" + tmpData.getItemName());
+		//System.out.println("*************" + tmpData.getItemName());
 		if (tmpData.getItemName().equals("Milling Speed")) {
 			millingSpeedList.add((int) tmpData.getValue());
-			System.out.println("****************************************************************");
-			System.out.println(tmpData.getValue());
+			System.out.println("Milling Speed "+tmpData.getValue());
 		} else if (tmpData.getItemName().equals("Milling Heat")) {
-			System.out.println("****************************************************************");
 			millingHeatList.add((double) tmpData.getValue());
-			System.out.println(tmpData.getValue());
+			//System.out.println("Milling Heat " + tmpData.getValue());
 		}
+	}
+
+	public void handleDrilling() {
+		//System.out.println("*************" + tmpData.getItemName());
+		if (tmpData.getItemName().equals("Drilling Speed")) {
+			drillingSpeedList.add((int) tmpData.getValue());
+			//System.out.println("Drilling Speed " +tmpData.getValue());
+		} else if (tmpData.getItemName().equals("Drilling Heat")) {
+			drillingHeatList.add((double) tmpData.getValue());
+			//System.out.println("Drilling Heat "+tmpData.getValue());
+		}
+	}
+	
+	public static long getTotalTime(ArrayList valueList)
+	{
+		long start = ((OPCDataItem) valueList.get(0)).getTimestamp();
+		long end = ((OPCDataItem) valueList.get(valueList.size()-1)).getTimestamp();
+		
+		return end-start;
+	}
+
+	public static double calcAvg(ArrayList valueList) {
+		double sum = 0;
+		double counter = 0;
+		
+		for (int i = 0; i < valueList.size(); i++) {
+			try{
+			sum = sum + (double) valueList.get(i);
+			}
+			catch(Exception e)
+			{
+				sum = sum + (double)(int) valueList.get(i);
+			}
+			counter++;
+		}
+		return sum / counter;
 	}
 
 	public void handleOPCDataItem(OPCDataItem tmpData) {
@@ -228,6 +275,12 @@ public class WorkPiece {
 				break;
 			case "Milling Heat":
 				trigger = Triggers.MILLING;
+				break;
+			case "Drilling Speed":
+				trigger = Triggers.DRILLING;
+				break;
+			case "Drilling Heat":
+				trigger = Triggers.DRILLING;
 				break;
 			}
 
@@ -287,7 +340,7 @@ public class WorkPiece {
 				break;
 			}
 		}
-		System.out.println("Trigger Value: " + trigger);
+		// System.out.println("Trigger Value: " + trigger);
 		fsm.fire(trigger);
 
 	}

@@ -51,12 +51,12 @@ public class OPCDataListener implements MessageListener {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
-		_log.debug("New OPC data listener created.");
+		// _log.debug("New OPC data listener created.");
 	}
 
 	@Override
 	public void onMessage(Message arg0) {
-		_log.debug("New OPC message arrived!");
+		// _log.debug("New OPC message arrived!");
 
 		TextMessage tmpMessage = null;
 		OPCDataItem tmpData;
@@ -66,17 +66,14 @@ public class OPCDataListener implements MessageListener {
 			_log.warn("Unknown format, marshalling aborted.");
 			return;
 		}
-
-		try {
-			_log.debug("OPCDataMessage: " + tmpMessage.getText());
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
-
+		/*
+		 * try { _log.debug("OPCDataMessage: " + tmpMessage.getText()); } catch
+		 * (JMSException e) { e.printStackTrace(); }
+		 */
 		try {
 			StringReader sReader = new StringReader(tmpMessage.getText());
 			tmpData = (OPCDataItem) _unmarshaller.unmarshal(sReader);
-			_log.debug("OPC Object created: " + tmpData.toString());
+			// _log.debug("OPC Object created: " + tmpData.toString());
 
 			List<WorkPiece> list = WorkPieceList.list;
 
