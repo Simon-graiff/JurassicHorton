@@ -7,6 +7,11 @@ import org.springframework.scheduling.Trigger;
 
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 import stateless4j.PartStates;
 import stateless4j.Triggers;
@@ -188,8 +193,8 @@ public class WorkPiece {
 		 * OPCDataItemList.get(i).getTimestamp() + "\n"); }
 		 */
 		System.out.println("\n\n\n\n\n");
-		System.out
-				.println("****************** OUTPUT DATA FOR " + ERPData.getOrderNumber() + " ***********************\n");
+		System.out.println(
+				"****************** OUTPUT DATA FOR " + ERPData.getOrderNumber() + " ***********************\n");
 
 		/*
 		 * System.out.print("\n********\nSpeed:\n"); for (int i = 0; i <
@@ -199,9 +204,9 @@ public class WorkPiece {
 		 * millingHeatList.size(); i++) {
 		 * System.out.print(millingHeatList.get(i) + " "); }
 		 */
-		System.out.println("AVG Milling heat: " + calcAvg(drillingHeatList));
-		System.out.println("AVG milling speed: " + calcAvg(drillingSpeedList));
-		System.out.println("AVG Drilling heat: " + calcAvg(millingHeatList));
+		System.out.println("AVG Milling heat: " + calcAvg(millingHeatList));
+		System.out.println("AVG milling speed: " + calcAvg(millingSpeedList));
+		System.out.println("AVG Drilling heat: " + calcAvg(drillingHeatList));
 		System.out.println("AVG Drilling Speed: " + calcAvg(drillingSpeedList));
 		System.out.println("Max Milling Heat: " + getPeak(drillingHeatList));
 		System.out.println("Max Milling speed: " + getPeak(drillingSpeedList));
@@ -214,6 +219,39 @@ public class WorkPiece {
 		System.out.println("\n***************** END OF PRODUCT************************");
 
 		System.out.println("\n\n\n\n\n");
+
+		String textUri = "mongodb://admin:admin@ds047602.mongolab.com:47602/hortonmongodb";
+
+		// Create MongoClientURI object from which you get MongoClient obj
+		MongoClientURI uri = new MongoClientURI(textUri);
+
+		// Connect to that uri
+		MongoClient m = new MongoClient(uri);
+
+		// get the database named sample
+		DB d = m.getDB("hortonmongodb");
+
+		// get the collection mycollection in sample
+		DBCollection collection = d.getCollection("WorkPiece");
+
+		// Now create a simple BasicDBObject
+		BasicDBObject b = new BasicDBObject();
+		b.put("orderNumber", ERPData.getOrderNumber());
+		b.put("customerNumber", ERPData.getCustomerNumber());
+		b.put("materialNumber", ERPData.getMaterialNumber());
+		b.put("avgDrillingHeat", calcAvg(drillingHeatList));
+		b.put("avgDrillingSpeed", calcAvg(drillingSpeedList));
+		b.put("avgMillingHeat", calcAvg(millingHeatList));
+		b.put("avgMillingSpeed", calcAvg(millingSpeedList));
+		b.put("maxDrillingHeat", getPeak(drillingHeatList));
+		b.put("maxDrillingSpeed", getPeak(drillingSpeedList));
+		b.put("maxMillingHeat", getPeak(millingHeatList));
+		b.put("maxMillingSpeed", getPeak(millingSpeedList));
+		b.put("totalTime", getTotalTime(OPCDataItemList));
+
+		// Insert that object into the collection
+		collection.insert(b);
+		m.close();
 	}
 
 	public void saveToOPCDataItemList() {

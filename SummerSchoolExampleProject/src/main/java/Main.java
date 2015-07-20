@@ -18,6 +18,13 @@ import org.apache.camel.impl.DefaultCamelContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+
 import esper.EsperTest;
 import activemq.QueueConnection;
 import stateless4j.TestMachine;
