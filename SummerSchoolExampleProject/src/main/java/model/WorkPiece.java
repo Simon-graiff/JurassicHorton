@@ -53,7 +53,7 @@ public class WorkPiece {
 
 		millingHeatList = new ArrayList<Double>();
 		millingSpeedList = new ArrayList<Integer>();
-		
+
 		drillingHeatList = new ArrayList<Double>();
 		drillingSpeedList = new ArrayList<Integer>();
 	}
@@ -172,7 +172,7 @@ public class WorkPiece {
 
 	public void finish() {
 		List<WorkPiece> list = WorkPieceList.list;
-		//System.out.println("Size of list " + list.size());
+		// System.out.println("Size of list " + list.size());
 		if (list.size() == 1) {
 			list.remove(0);
 		}
@@ -180,33 +180,40 @@ public class WorkPiece {
 		 * if (list.size() > 1) { list.add(0, list.get(1)); list.remove(1); }
 		 * else { list.remove(0); }
 		 */
-		
+
 		/*
-		System.out.println("Data of the OPCDataItem:\n");
-		for (int i = 0; i < OPCDataItemList.size(); i++) {
-			System.out.print(OPCDataItemList.get(i).getItemName() + " " + OPCDataItemList.get(i).getTimestamp() + "\n");
-		}*/
+		 * System.out.println("Data of the OPCDataItem:\n"); for (int i = 0; i <
+		 * OPCDataItemList.size(); i++) {
+		 * System.out.print(OPCDataItemList.get(i).getItemName() + " " +
+		 * OPCDataItemList.get(i).getTimestamp() + "\n"); }
+		 */
+		System.out.println("\n\n\n\n\n");
+		System.out
+				.println("****************** OUTPUT DATA FOR " + ERPData.getOrderNumber() + " ***********************\n");
 
-		System.out.println("*****************************************");
-		System.out.println(ERPData.getOrderNumber() + " is finished");
-
-		/*System.out.print("\n********\nSpeed:\n");
-		for (int i = 0; i < millingSpeedList.size(); i++) {
-			System.out.print(millingSpeedList.get(i) + " ");
-		}
-		System.out.print("\n********\nHeat:\n");
-		for (int i = 0; i < millingHeatList.size(); i++) {
-			System.out.print(millingHeatList.get(i) + " ");
-		}*/
+		/*
+		 * System.out.print("\n********\nSpeed:\n"); for (int i = 0; i <
+		 * millingSpeedList.size(); i++) {
+		 * System.out.print(millingSpeedList.get(i) + " "); }
+		 * System.out.print("\n********\nHeat:\n"); for (int i = 0; i <
+		 * millingHeatList.size(); i++) {
+		 * System.out.print(millingHeatList.get(i) + " "); }
+		 */
 		System.out.println("AVG Milling heat: " + calcAvg(drillingHeatList));
 		System.out.println("AVG milling speed: " + calcAvg(drillingSpeedList));
 		System.out.println("AVG Drilling heat: " + calcAvg(millingHeatList));
 		System.out.println("AVG Drilling Speed: " + calcAvg(drillingSpeedList));
-		System.out.println("Total time "+ getTotalTime(OPCDataItemList));
-		System.out.println("ERPData **************\nCustomer Number "+ERPData.getCustomerNumber());
-		System.out.println("Material Number "+ERPData.getMaterialNumber());
-		System.out.println("Order Number "+ERPData.getOrderNumber());		
-		System.out.println("***************** END OF PRODUCT************************");
+		System.out.println("Max Milling Heat: " + getPeak(drillingHeatList));
+		System.out.println("Max Milling speed: " + getPeak(drillingSpeedList));
+		System.out.println("Max Drilling heat: " + getPeak(millingHeatList));
+		System.out.println("Max Drilling Speed: " + getPeak(drillingSpeedList));
+		System.out.println("Total time " + getTotalTime(OPCDataItemList));
+		System.out.println("Customer Number " + ERPData.getCustomerNumber());
+		System.out.println("Material Number " + ERPData.getMaterialNumber());
+		System.out.println("Order Number " + ERPData.getOrderNumber());
+		System.out.println("\n***************** END OF PRODUCT************************");
+
+		System.out.println("\n\n\n\n\n");
 	}
 
 	public void saveToOPCDataItemList() {
@@ -214,50 +221,63 @@ public class WorkPiece {
 	}
 
 	public void handleMilling() {
-		//System.out.println("*************" + tmpData.getItemName());
+		// System.out.println("*************" + tmpData.getItemName());
 		if (tmpData.getItemName().equals("Milling Speed")) {
 			millingSpeedList.add((int) tmpData.getValue());
-			System.out.println("Milling Speed "+tmpData.getValue());
+			System.out.println("Milling Speed " + tmpData.getValue());
 		} else if (tmpData.getItemName().equals("Milling Heat")) {
 			millingHeatList.add((double) tmpData.getValue());
-			//System.out.println("Milling Heat " + tmpData.getValue());
+			// System.out.println("Milling Heat " + tmpData.getValue());
 		}
 	}
 
 	public void handleDrilling() {
-		//System.out.println("*************" + tmpData.getItemName());
+		// System.out.println("*************" + tmpData.getItemName());
 		if (tmpData.getItemName().equals("Drilling Speed")) {
 			drillingSpeedList.add((int) tmpData.getValue());
-			//System.out.println("Drilling Speed " +tmpData.getValue());
+			// System.out.println("Drilling Speed " +tmpData.getValue());
 		} else if (tmpData.getItemName().equals("Drilling Heat")) {
 			drillingHeatList.add((double) tmpData.getValue());
-			//System.out.println("Drilling Heat "+tmpData.getValue());
+			// System.out.println("Drilling Heat "+tmpData.getValue());
 		}
 	}
-	
-	public static long getTotalTime(ArrayList valueList)
-	{
+
+	public static long getTotalTime(ArrayList valueList) {
 		long start = ((OPCDataItem) valueList.get(0)).getTimestamp();
-		long end = ((OPCDataItem) valueList.get(valueList.size()-1)).getTimestamp();
-		
-		return end-start;
+		long end = ((OPCDataItem) valueList.get(valueList.size() - 1)).getTimestamp();
+
+		return end - start;
 	}
 
 	public static double calcAvg(ArrayList valueList) {
 		double sum = 0;
 		double counter = 0;
-		
+
 		for (int i = 0; i < valueList.size(); i++) {
-			try{
-			sum = sum + (double) valueList.get(i);
-			}
-			catch(Exception e)
-			{
-				sum = sum + (double)(int) valueList.get(i);
+			try {
+				sum = sum + (double) valueList.get(i);
+			} catch (Exception e) {
+				sum = sum + (double) (int) valueList.get(i);
 			}
 			counter++;
 		}
 		return sum / counter;
+	}
+
+	public static double getPeak(ArrayList valueList) {
+		double max = 0;
+		for (int i = 0; i < valueList.size(); i++) {
+			try {
+				if ((double) valueList.get(i) > max) {
+					max = (double) valueList.get(i);
+				}
+			} catch (Exception e) {
+				if ((double) (int) valueList.get(i) > max) {
+					max = (double) (int) valueList.get(i);
+				}
+			}
+		}
+		return max;
 	}
 
 	public void handleOPCDataItem(OPCDataItem tmpData) {

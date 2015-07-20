@@ -62,16 +62,16 @@ public class ERPDataListener implements MessageListener {
 		}
 
 		/*
-		 * try { _log.debug(tmpMessage.getText()); } catch (JMSException e) {
-		 * e.printStackTrace(); }
+		 try { _log.debug(tmpMessage.getText()); } catch (JMSException e) {
+		 e.printStackTrace(); }
 		 */
 
 		try {
 			StringReader sReader = new StringReader(tmpMessage.getText());
 			tmpData = (ERPData) _unmarshaller.unmarshal(sReader);
 			//_log.debug("Object created: " + tmpData.toString());
-			System.out.println(tmpData.getMaterialNumber());
-
+			//System.out.println(tmpData.getMaterialNumber());
+System.out.println("********** START OF "+tmpData.getOrderNumber()+ " *******************");
 			WorkPiece tmpWorkPiece = new WorkPiece(tmpData);
 			WorkPieceList.list.add(tmpWorkPiece);
 

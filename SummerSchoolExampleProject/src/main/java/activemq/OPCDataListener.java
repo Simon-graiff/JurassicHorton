@@ -79,11 +79,11 @@ public class OPCDataListener implements MessageListener {
 
 			synchronized (list) {
 				for (int i = 0; i < list.size(); i++) {
-					System.out.println("State before move: " + list.get(i).getFsm().getState());
+					//System.out.println("State before move: " + list.get(i).getFsm().getState());
 					list.get(i).handleOPCDataItem(tmpData);
 
 					if (list.size() > 0) {
-						System.out.println("State after move: " + list.get(i).getFsm().getState());
+						//System.out.println("State after move: " + list.get(i).getFsm().getState());
 					} else {
 					}
 				}
