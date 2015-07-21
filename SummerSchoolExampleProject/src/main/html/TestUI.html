@@ -1,0 +1,39 @@
+<html>
+    <head>
+    <title>TestUI with D3</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    </head>
+    
+    <body>
+        <table>
+            <tr>
+                <th>Order Number</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td id="orderNumber">Unknown</td>
+                <td id="status">In progress</td>
+            </tr>
+        </table>
+        <script>
+            
+            var orderNumberCollection = [];
+            
+            var client = new WebSocket("ws://localhost:8081");
+            console.log("Started listening");
+            
+            client.onmessage = function(e){
+                console.log(e.data);
+                var json = JSON.parse(e.data)
+        
+                var orderNumber = json.orderNumber;
+                orderNumberCollection.push(orderNumber);
+                console.log(orderNumberCollection.length);
+                
+                document.getElementById("orderNumber").innerHTML = orderNumber;
+                document.getElementById("status").innerHTML = "Finished";
+            }
+            
+        </script>
+    </body>
+</html>

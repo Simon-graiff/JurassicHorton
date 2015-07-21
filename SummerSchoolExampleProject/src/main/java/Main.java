@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBException;
 
 import marshalling.DemoMarshalling;
 import model.ERPData;
+import model.Server;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -40,7 +41,8 @@ public class Main {
 	Logger _log = 	LogManager.getLogger(Main.class);
 		
 	public static void main(String[] args) {
-		
+		Server.getInstance().start();
+		System.out.println("Server is running");
 		try {
 			Runtime rt = Runtime.getRuntime();
 			rt.exec("CMD /C start executeSim.bat");

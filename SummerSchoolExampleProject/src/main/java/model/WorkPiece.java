@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.springframework.scheduling.Trigger;
 
 import com.github.oxo42.stateless4j.StateMachine;
@@ -246,6 +247,15 @@ public class WorkPiece {
 		System.out.println("Drilling time " + calcDrillingTime());
 
 		System.out.println("\n\n\n\n\n");
+		
+		//UI update
+		WSMessage message = new WSMessage(ERPData.getOrderNumber());
+		
+		Gson x = new Gson();
+		String json = x.toJson(message);
+		Server.getInstance().sendToAll(json);
+		System.out.println("Sent to Server; "+json);
+		
 
 		/*SpectralData specData = getSpectralData();
 		while (getSpectralData() == null) {
@@ -303,6 +313,7 @@ public class WorkPiece {
 		// Insert that object into the collection
 		collection.insert(b);
 		m.close();
+		
 	}
 
 	private long getSpecTime(SpectralData specData) {
