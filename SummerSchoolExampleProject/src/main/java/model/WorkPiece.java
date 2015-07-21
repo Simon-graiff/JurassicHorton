@@ -1,5 +1,11 @@
 package model;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +13,7 @@ import org.springframework.scheduling.Trigger;
 
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
+import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -33,6 +40,17 @@ public class WorkPiece {
 
 	private ArrayList<Double> drillingHeatList;
 	private ArrayList<Integer> drillingSpeedList;
+
+	private ArrayList<Long> timestampList;
+	private long[] duration;
+
+	private long drillingStart = 0;
+	private long drillingEnd = 0;
+	private long millingStart = 0;
+	private long millingEnd = 0;
+
+	private static int size = 0;
+	SpectralData specData = new SpectralData();
 
 	public ERPData getERPData() {
 		return ERPData;
@@ -61,6 +79,8 @@ public class WorkPiece {
 
 		drillingHeatList = new ArrayList<Double>();
 		drillingSpeedList = new ArrayList<Integer>();
+
+		timestampList = new ArrayList<Long>();
 	}
 
 	public StateMachine<PartStates, Triggers> getFsm() {
@@ -86,63 +106,64 @@ public class WorkPiece {
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L1_TRUE, PartStates.L1_OUT)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
 
 		fsmc.configure(PartStates.L1_OUT).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L3_FALSE).ignore(Triggers.MILLING_OFF)
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L2_FALSE, PartStates.L2_IN)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
 
 		fsmc.configure(PartStates.L2_IN).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE).ignore(Triggers.MILLING_OFF)
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L2_TRUE, PartStates.L2_OUT)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
 
 		fsmc.configure(PartStates.L2_OUT).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.MILLING_OFF)
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L3_FALSE, PartStates.L3_IN)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
 
 		fsmc.configure(PartStates.L3_IN).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.MILLING_ON, PartStates.MILLING_ON)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
 
 		fsmc.configure(PartStates.MILLING_ON).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.MILLING_OFF, PartStates.MILLING_OFF)
-				.permitReentry(Triggers.MILLING).onEntry(this::handleMilling).onEntry(this::saveToOPCDataItemList);
+				.permitReentry(Triggers.MILLING).onEntry(this::handleMilling).onEntry(this::saveToOPCDataItemList)
+				.onEntry(this::setMillingStart);
 
 		fsmc.configure(PartStates.MILLING_OFF).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L3_TRUE, PartStates.L3_OUT)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::setMillingEnd);
 
 		fsmc.configure(PartStates.L3_OUT).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L4_FALSE, PartStates.L4_IN)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
 
 		fsmc.configure(PartStates.L4_IN).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.DRILLING_ON, PartStates.DRILLING_ON)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
 
 		fsmc.configure(PartStates.DRILLING_ON).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
@@ -150,28 +171,29 @@ public class WorkPiece {
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE)
 				.permit(Triggers.DRILLING_OFF, PartStates.DRILLING_OFF).permitReentry(Triggers.DRILLING)
-				.onEntry(this::handleDrilling).onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::handleDrilling).onEntry(this::saveToOPCDataItemList).onEntry(this::setDrillingStart);
 
 		fsmc.configure(PartStates.DRILLING_OFF).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L4_TRUE, PartStates.L4_OUT)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::setDrillingEnd);
 
 		fsmc.configure(PartStates.L4_OUT).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF)
 				.ignore(Triggers.L4_TRUE).ignore(Triggers.L5_TRUE).permit(Triggers.L5_FALSE, PartStates.L5)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
 
 		fsmc.configure(PartStates.L5).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF)
 				.ignore(Triggers.L4_TRUE).ignore(Triggers.L5_FALSE).permit(Triggers.L5_TRUE, PartStates.FINISHED)
-				.onEntry(this::saveToOPCDataItemList).onExit(this::finish);
+				.onEntry(this::saveToOPCDataItemList).onExit(this::finish).onEntry(this::addTimestamp)
+				.onExit(this::addTimestamp);
 
 	}
 
@@ -218,7 +240,26 @@ public class WorkPiece {
 		System.out.println("Order Number " + ERPData.getOrderNumber());
 		System.out.println("\n***************** END OF PRODUCT************************");
 
+		long[] duration = calcTimes();
+
+		System.out.println("Milling time " + calcMillingTime());
+		System.out.println("Drilling time " + calcDrillingTime());
+
 		System.out.println("\n\n\n\n\n");
+
+		/*SpectralData specData = getSpectralData();
+		while (getSpectralData() == null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			specData = getSpectralData();
+		}*/
+		
+		readFile();
+		System.out.println("Bla bla bla "+specData.getOverallStatus());
 
 		String textUri = "mongodb://admin:admin@ds047602.mongolab.com:47602/hortonmongodb";
 
@@ -248,10 +289,162 @@ public class WorkPiece {
 		b.put("maxMillingHeat", getPeak(millingHeatList));
 		b.put("maxMillingSpeed", getPeak(millingSpeedList));
 		b.put("totalTime", getTotalTime(OPCDataItemList));
+		for (int i = 0; i < duration.length; i++) {
+			System.out.println("Duration from L " + i + " :" + duration[i]);
+			b.put("L" + (i + 1) + "_duration", duration[i]);
+		}
+		b.put("millingDuration", calcMillingTime());
+		b.put("drillingDuration", calcDrillingTime());
+
+		b.put("status", specData.getOverallStatus());
+		b.put("specDuration", getSpecTime(specData));
 
 		// Insert that object into the collection
 		collection.insert(b);
 		m.close();
+	}
+
+	private long getSpecTime(SpectralData specData) {
+		return specData.getTs_stop() - specData.getTs_start();
+	}
+
+	/*
+	private SpectralData getSpectralData() {
+		/// logs/"+ERPData.getOrderNumber()+".erp"
+
+		String string = ERPData.getOrderNumber();
+		String[] parts = string.split("-");
+		String filename = "";
+
+		for (int i = 0; i < parts.length; i++) {
+			filename = filename + parts[i];
+		}
+		System.out.println(filename);
+
+		try (BufferedReader br = new BufferedReader(new FileReader("logs//" + filename + ".erp"))) {
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+				sb.append(line);
+				sb.append(System.lineSeparator());
+				line = br.readLine();
+			}
+			br.close();
+			System.out.println(sb.toString());
+			Gson gson = new Gson();
+			SpectralData specData = gson.fromJson(sb.toString(), SpectralData.class);
+			System.out.println(specData.toString());
+			System.out.println(specData.getOverallStatus());
+
+			return specData;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}*/
+
+	public SpectralData readFile() {
+		try {
+			Files.walk(Paths.get("C:\\Users\\Christian\\Desktop\\logs\\")).forEach(filePath -> {
+
+				if (Files.isRegularFile(filePath)) {
+					size++;
+					Path newFile = filePath;
+					System.out.println(newFile.getFileName());
+					System.out.println(newFile.toString());
+
+					try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
+						StringBuilder sb = new StringBuilder();
+						String line = br.readLine();
+
+						while (line != null) {
+							sb.append(line);
+							sb.append(System.lineSeparator());
+							line = br.readLine();
+						}
+						
+						br.close();
+						// System.out.println(sb.toString());
+						Gson gson = new Gson();
+						specData = gson.fromJson(sb.toString(), SpectralData.class);
+						// System.out.println(specData.toString());
+						System.out.println(specData.getOverallStatus());
+
+						// Files.delete(filePath);
+
+						String testPath = ("C:\\Users\\Christian\\Desktop\\logs\\" + newFile.getFileName());
+						Path path = Paths.get(testPath);
+						Files.delete(path);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+			});
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		if (size == 0) {
+			System.out.println("No file found");
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			readFile();
+		}
+		else
+		{
+			return specData;
+		}
+		return null;
+	}
+
+	private void setDrillingEnd() {
+		drillingEnd = tmpData.getTimestamp();
+	}
+
+	private void setDrillingStart() {
+		if (drillingStart == 0) {
+			drillingStart = tmpData.getTimestamp();
+		}
+	}
+
+	private long calcDrillingTime() {
+		return drillingEnd - drillingStart;
+	}
+
+	private void setMillingStart() {
+		if (millingStart == 0) {
+			millingStart = tmpData.getTimestamp();
+		}
+	}
+
+	private void setMillingEnd() {
+		millingEnd = tmpData.getTimestamp();
+	}
+
+	private long calcMillingTime() {
+		return millingEnd - millingStart;
+	}
+
+	private long[] calcTimes() {
+		long[] duration = new long[5];
+		int j = 0;
+		for (int i = 0; i < timestampList.size(); i = i + 2) {
+			duration[j] = timestampList.get(i + 1) - timestampList.get(i);
+			j++;
+		}
+		return duration;
+	}
+
+	private void addTimestamp() {
+		timestampList.add(tmpData.getTimestamp());
 	}
 
 	public void saveToOPCDataItemList() {
@@ -262,7 +455,7 @@ public class WorkPiece {
 		// System.out.println("*************" + tmpData.getItemName());
 		if (tmpData.getItemName().equals("Milling Speed")) {
 			millingSpeedList.add((int) tmpData.getValue());
-			System.out.println("Milling Speed " + tmpData.getValue());
+			// System.out.println("Milling Speed " + tmpData.getValue());
 		} else if (tmpData.getItemName().equals("Milling Heat")) {
 			millingHeatList.add((double) tmpData.getValue());
 			// System.out.println("Milling Heat " + tmpData.getValue());
