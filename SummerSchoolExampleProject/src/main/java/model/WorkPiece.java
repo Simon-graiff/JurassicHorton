@@ -295,6 +295,7 @@ public class WorkPiece {
 		}
 		b.put("millingDuration", calcMillingTime());
 		b.put("drillingDuration", calcDrillingTime());
+		b.put("timestamp", System.currentTimeMillis());
 
 		b.put("status", specData.getOverallStatus());
 		b.put("specDuration", getSpecTime(specData));
@@ -346,7 +347,7 @@ public class WorkPiece {
 
 	public SpectralData readFile() {
 		try {
-			Files.walk(Paths.get("C:\\Users\\Christian\\Desktop\\logs\\")).forEach(filePath -> {
+			Files.walk(Paths.get(".\\logs\\")).forEach(filePath -> {
 
 				if (Files.isRegularFile(filePath)) {
 					size++;
@@ -373,7 +374,7 @@ public class WorkPiece {
 
 						// Files.delete(filePath);
 
-						String testPath = ("C:\\Users\\Christian\\Desktop\\logs\\" + newFile.getFileName());
+						String testPath = (".\\logs\\" + newFile.getFileName());
 						Path path = Paths.get(testPath);
 						Files.delete(path);
 
