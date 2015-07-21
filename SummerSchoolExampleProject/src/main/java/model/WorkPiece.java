@@ -317,44 +317,10 @@ public class WorkPiece {
 	}
 
 	private long getSpecTime(SpectralData specData) {
+		System.out.println("Times: "+specData.getTs_start()+specData.getTs_stop());
 		return specData.getTs_stop() - specData.getTs_start();
 	}
 
-	/*
-	private SpectralData getSpectralData() {
-		/// logs/"+ERPData.getOrderNumber()+".erp"
-
-		String string = ERPData.getOrderNumber();
-		String[] parts = string.split("-");
-		String filename = "";
-
-		for (int i = 0; i < parts.length; i++) {
-			filename = filename + parts[i];
-		}
-		System.out.println(filename);
-
-		try (BufferedReader br = new BufferedReader(new FileReader("logs//" + filename + ".erp"))) {
-			StringBuilder sb = new StringBuilder();
-			String line = br.readLine();
-
-			while (line != null) {
-				sb.append(line);
-				sb.append(System.lineSeparator());
-				line = br.readLine();
-			}
-			br.close();
-			System.out.println(sb.toString());
-			Gson gson = new Gson();
-			SpectralData specData = gson.fromJson(sb.toString(), SpectralData.class);
-			System.out.println(specData.toString());
-			System.out.println(specData.getOverallStatus());
-
-			return specData;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}*/
 
 	public SpectralData readFile() {
 		try {
