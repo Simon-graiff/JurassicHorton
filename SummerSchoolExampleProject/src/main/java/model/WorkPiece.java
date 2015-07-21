@@ -309,6 +309,14 @@ public class WorkPiece {
 
 		b.put("status", specData.getOverallStatus());
 		b.put("specDuration", getSpecTime(specData));
+		b.put("a1", specData.getA1());
+		b.put("a2", specData.getA2());
+		b.put("b1", specData.getB1());
+		b.put("b2", specData.getB2());
+		b.put("em1", specData.getEm1());
+		b.put("em2", specData.getEm2());
+		b.put("Ts_start", specData.getTs_start());
+		b.put("Ts_stop", specData.getTs_stop());
 
 		// Insert that object into the collection
 		collection.insert(b);
