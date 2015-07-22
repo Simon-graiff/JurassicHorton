@@ -206,29 +206,10 @@ public class WorkPiece {
 		if (list.size() == 1) {
 			list.remove(0);
 		}
-		/*
-		 * if (list.size() > 1) { list.add(0, list.get(1)); list.remove(1); }
-		 * else { list.remove(0); }
-		 */
-
-		/*
-		 * System.out.println("Data of the OPCDataItem:\n"); for (int i = 0; i <
-		 * OPCDataItemList.size(); i++) {
-		 * System.out.print(OPCDataItemList.get(i).getItemName() + " " +
-		 * OPCDataItemList.get(i).getTimestamp() + "\n"); }
-		 */
+	
 		System.out.println("\n\n\n\n\n");
 		System.out.println(
 				"****************** OUTPUT DATA FOR " + ERPData.getOrderNumber() + " ***********************\n");
-
-		/*
-		 * System.out.print("\n********\nSpeed:\n"); for (int i = 0; i <
-		 * millingSpeedList.size(); i++) {
-		 * System.out.print(millingSpeedList.get(i) + " "); }
-		 * System.out.print("\n********\nHeat:\n"); for (int i = 0; i <
-		 * millingHeatList.size(); i++) {
-		 * System.out.print(millingHeatList.get(i) + " "); }
-		 */
 		System.out.println("AVG Milling heat: " + calcAvg(millingHeatList));
 		System.out.println("AVG milling speed: " + calcAvg(millingSpeedList));
 		System.out.println("AVG Drilling heat: " + calcAvg(drillingHeatList));
@@ -250,25 +231,12 @@ public class WorkPiece {
 
 		System.out.println("\n\n\n\n\n");
 
-		/*
-		 * //UI update WSMessage message = new
-		 * WSMessage(ERPData.getOrderNumber()); Gson x = new Gson(); String json
-		 * = x.toJson(message); Server.getInstance().sendToAll(json);
-		 * System.out.println("Sent to Server; "+json);
-		 */
-
-		/*
-		 * SpectralData specData = getSpectralData(); while (getSpectralData()
-		 * == null) { try { Thread.sleep(1000); } catch (InterruptedException e)
-		 * { // TODO Auto-generated catch block e.printStackTrace(); } specData
-		 * = getSpectralData(); }
-		 */
-
+		
 		readFile();
-		System.out.println("Bla bla bla " + specData.getOverallStatus());
+		System.out.println("Status " + specData.getOverallStatus());
 		sendSpecStatus(specData.getOverallStatus());
 
-		/*String textUri = "mongodb://admin:admin@ds047602.mongolab.com:47602/hortonmongodb";
+		String textUri = "mongodb://admin:admin@ds047602.mongolab.com:47602/hortonmongodb";
 
 		// Create MongoClientURI object from which you get MongoClient obj
 		MongoClientURI uri = new MongoClientURI(textUri);
@@ -320,7 +288,6 @@ public class WorkPiece {
 		// Insert that object into the collection
 		collection.insert(b);
 		m.close();
-		*/
 	}
 
 	private void sendToUI() {
@@ -386,7 +353,6 @@ public class WorkPiece {
 				}
 			});
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -395,7 +361,6 @@ public class WorkPiece {
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			readFile();
@@ -452,24 +417,18 @@ public class WorkPiece {
 	}
 
 	public void handleMilling() {
-		// System.out.println("*************" + tmpData.getItemName());
 		if (tmpData.getItemName().equals("Milling Speed")) {
 			millingSpeedList.add((int) tmpData.getValue());
-			// System.out.println("Milling Speed " + tmpData.getValue());
 		} else if (tmpData.getItemName().equals("Milling Heat")) {
 			millingHeatList.add((double) tmpData.getValue());
-			// System.out.println("Milling Heat " + tmpData.getValue());
 		}
 	}
 
 	public void handleDrilling() {
-		// System.out.println("*************" + tmpData.getItemName());
 		if (tmpData.getItemName().equals("Drilling Speed")) {
 			drillingSpeedList.add((int) tmpData.getValue());
-			// System.out.println("Drilling Speed " +tmpData.getValue());
 		} else if (tmpData.getItemName().equals("Drilling Heat")) {
 			drillingHeatList.add((double) tmpData.getValue());
-			// System.out.println("Drilling Heat "+tmpData.getValue());
 		}
 	}
 
@@ -607,7 +566,6 @@ public class WorkPiece {
 				break;
 			}
 		}
-		// System.out.println("Trigger Value: " + trigger);
 		fsm.fire(trigger);
 
 	}

@@ -51,24 +51,6 @@ public class TestMachine {
 	
 	private void configure() {
 		fsmc = new StateMachineConfig<PartStates, Triggers>(); 
-		
-	/*	fsmc.configure(PartStates.INIT)
-		.permit(Triggers.DRILLING_ON, PartStates.DRILLING)
-		.permit(Triggers.MILLING_ON, PartStates.MILLING); 
-		
-		fsmc.configure(PartStates.DRILLING)
-		.permit(Triggers.DRILLING_OFF, PartStates.INIT)
-		.ignore(Triggers.DRILLING_ON)
-		.ignore(Triggers.MILLING_OFF)
-		.ignore(Triggers.MILLING_ON)
-		.onEntry(this::increaseDrillingCounter);
-		
-		fsmc.configure(PartStates.MILLING)
-		.permit(Triggers.MILLING_OFF, PartStates.INIT)
-		.ignore(Triggers.DRILLING_ON)
-		.ignore(Triggers.DRILLING_OFF)
-		.ignore(Triggers.MILLING_ON)
-		.onEntry(this::increaseMillingCounter);*/
 	}
 
 	/**
