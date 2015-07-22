@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <title>Plant dashboard</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    
+    <body>
+        <center>
+            <table id="productionTable" border="1px">
+            <tr>
+                <th id="orderNumber">Order Number</th>
+                <th class="data">Customer Number</th>
+                <th class="data">Material Number</th>
+                <th id="status">Status</th>
+            </tr>
+            </table>
+        </center>
+        
+        <script>
+            
+            var orderNumberCollection = [];
+            var oldOrderNumber = "";
+            var oldCustomerNumber = "";
+            var oldMaterialNumber = "";
+            var oldAction = "";
+            
+            var client = new WebSocket("ws://localhost:8081");
+            console.log("Started listening");
+            
+            client.onmessage = function(e){
+                console.log(e.data);
+                var json = JSON.parse(e.data)
+                
+                var orderNumber = json.orderNumber;
+                var customerNumber = json.customerNumber;
+                var materialNumber = json.materialNumber;
+                var action = json.itemName+": "+json.value;
+                
+                //orderNumberCollection.push(orderNumber);
+                
+                var table = document.getElementById("productionTable");
+                
+                if(materialNumber == 0){
+                    var specStatus = json.specStatus;
+                    
+                    if(specStatus == "OK"){
+                        document.getElementById("productionTable").deleteRow(1);
+                        var newTableRow = table.insertRow(1);
+                        newTableRow.style.backgroundColor = "lightgreen";
+                    }else{
+                        document.getElementById("productionTable").deleteRow(1);
+                        var newTableRow = table.insertRow(1);
+                        newTableRow.style.backgroundColor = "tomato";
+                    }
+                    
+                    var cellOrderNumber = newTableRow.insertCell(0);
+                    var cellCustomerNumber = newTableRow.insertCell(1);
+                    var cellMaterialNumber = newTableRow.insertCell(2);
+                    var cellAction = newTableRow.insertCell(3);
+
+                    cellOrderNumber.innerHTML = oldOrderNumber;
+                    cellCustomerNumber.innerHTML = oldCustomerNumber;
+                    cellMaterialNumber.innerHTML = oldMaterialNumber;
+                    cellAction.innerHTML = oldAction;
+                    
+                }else{
+                    if(oldOrderNumber == orderNumber){
+                        document.getElementById("productionTable").deleteRow(1);
+                    }
+                    
+                    var newTableRow = table.insertRow(1);
+                    newTableRow.style.backgroundColor = "orange";
+
+                    var cellOrderNumber = newTableRow.insertCell(0);
+                    var cellCustomerNumber = newTableRow.insertCell(1);
+                    var cellMaterialNumber = newTableRow.insertCell(2);
+                    var cellAction = newTableRow.insertCell(3);
+
+                    cellOrderNumber.innerHTML = orderNumber;
+                    cellCustomerNumber.innerHTML = customerNumber;
+                    cellMaterialNumber.innerHTML = materialNumber;
+                    cellAction.innerHTML = action;
+
+                    
+                }
+                
+                oldOrderNumber = orderNumber;
+                oldCustomerNumber = customerNumber;
+                oldMaterialNumber = materialNumber;
+                oldAction = action;
+            }
+            
+        </script>
+    </body>
+</html>

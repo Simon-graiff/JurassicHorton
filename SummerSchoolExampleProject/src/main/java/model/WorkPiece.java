@@ -268,7 +268,7 @@ public class WorkPiece {
 		System.out.println("Bla bla bla " + specData.getOverallStatus());
 		sendSpecStatus(specData.getOverallStatus());
 
-		String textUri = "mongodb://admin:admin@ds047602.mongolab.com:47602/hortonmongodb";
+		/*String textUri = "mongodb://admin:admin@ds047602.mongolab.com:47602/hortonmongodb";
 
 		// Create MongoClientURI object from which you get MongoClient obj
 		MongoClientURI uri = new MongoClientURI(textUri);
@@ -320,7 +320,7 @@ public class WorkPiece {
 		// Insert that object into the collection
 		collection.insert(b);
 		m.close();
-
+		*/
 	}
 
 	private void sendToUI() {

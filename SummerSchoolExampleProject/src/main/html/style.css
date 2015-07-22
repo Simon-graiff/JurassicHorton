@@ -1,0 +1,21 @@
+table{
+    border: 1px solid black;
+    table-layout: fixed;
+    width: 80%;
+    text-align: center;
+}
+
+#orderNumber{
+    overflow: hidden;
+    width: 40%;
+}
+
+.data{
+    overflow: hidden;
+    width: 15%;
+}
+
+.status{
+    overflow: hidden;
+    width: 30%;
+}    
