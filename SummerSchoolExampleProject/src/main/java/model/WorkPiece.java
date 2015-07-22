@@ -266,6 +266,7 @@ public class WorkPiece {
 
 		readFile();
 		System.out.println("Bla bla bla " + specData.getOverallStatus());
+		sendSpecStatus(specData.getOverallStatus());
 
 		String textUri = "mongodb://admin:admin@ds047602.mongolab.com:47602/hortonmongodb";
 
@@ -324,12 +325,20 @@ public class WorkPiece {
 
 	private void sendToUI() {
 		// UI update
-		WSMessage message = new WSMessage(ERPData.getOrderNumber(), ERPData.getCustomerNumber(),
+		WSMessage updateMessage = new WSMessage(ERPData.getOrderNumber(), ERPData.getCustomerNumber(),
 				ERPData.getMaterialNumber(), tmpData.getItemName(), tmpData.getStatus(), tmpData.getValue());
-		Gson x = new Gson();
-		String json = x.toJson(message);
-		Server.getInstance().sendToAll(json);
-		System.out.println("Sent to Server; " + json);
+		Gson updateGson = new Gson();
+		String updateJson = updateGson.toJson(updateMessage);
+		Server.getInstance().sendToAll(updateJson);
+		System.out.println("Sent to Server; " + updateJson);
+	}
+	
+	private void sendSpecStatus(String specStatus){
+		WSMessage specDataMessage = new WSMessage(ERPData.getOrderNumber(), specStatus);
+		Gson specDataGson = new Gson();
+		String specDataJson = specDataGson.toJson(specDataMessage);
+		Server.getInstance().sendToAll(specDataJson);
+		System.out.println("Sent to Server; " + specDataJson);
 	}
 
 	private long getSpecTime(SpectralData specData) {

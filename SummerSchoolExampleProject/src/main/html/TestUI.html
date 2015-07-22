@@ -8,6 +8,8 @@
         <table>
             <tr>
                 <th>Order Number</th>
+                <th>Customer Number</th>
+                <th>Material Number</th>
                 <th>Status</th>
             </tr>
             <tr>
@@ -25,16 +27,15 @@
             console.log("Started listening");
             
             client.onmessage = function(e){
-			console.log("Hallo")
                 console.log(e.data);
                 var json = JSON.parse(e.data)
         
                 var orderNumber = json.orderNumber;
-                orderNumberCollection.push(orderNumber);
-                console.log(orderNumberCollection.length);
+                //orderNumberCollection.push(orderNumber);
+                //console.log(orderNumberCollection.length);
                 
                 document.getElementById("orderNumber").innerHTML = orderNumber;
-                document.getElementById("status").innerHTML = (json.itemName + json.value);
+                document.getElementById("status").innerHTML = (json.itemName +": "+json.value);
 				document.getElementById("customerNumber").innerHTML = json.customerNumber;
 				document.getElementById("materialNumber").innerHTML = json.materialNumber;
 				document.getElementById("materialNumber").innerHTML = json.materialNumber;

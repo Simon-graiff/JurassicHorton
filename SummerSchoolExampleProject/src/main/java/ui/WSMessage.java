@@ -8,6 +8,7 @@ public class WSMessage {
 	String itemName;
 	String status;
 	Object value;
+	String specStatus;
 
 	public WSMessage(String orderNumber, int customerNumber, int materialNumber, String itemName, String status,
 			Object value) {
@@ -17,5 +18,10 @@ public class WSMessage {
 		this.itemName = itemName;
 		this.status = status;
 		this.value = value;
+	}
+	
+	public WSMessage(String orderNumber, String specStatus){
+		this.orderNumber = orderNumber;
+		this.specStatus = specStatus;
 	}
 }
