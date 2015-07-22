@@ -279,7 +279,7 @@ public class WorkPiece {
 		DB d = m.getDB("hortonmongodb");
 
 		// get the collection mycollection in sample
-		DBCollection collection = d.getCollection("WorkPiece");
+		DBCollection collection = d.getCollection("WorkPieceNew");
 
 		// Now create a simple BasicDBObject
 		BasicDBObject b = new BasicDBObject();
