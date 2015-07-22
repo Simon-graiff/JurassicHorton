@@ -8,7 +8,6 @@ import javax.xml.bind.JAXBException;
 
 import marshalling.DemoMarshalling;
 import model.ERPData;
-import model.Server;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -29,6 +28,7 @@ import com.mongodb.MongoClientURI;
 import esper.EsperTest;
 import activemq.QueueConnection;
 import stateless4j.TestMachine;
+import ui.Server;
 
 
 /**

@@ -23,6 +23,8 @@ import com.mongodb.MongoClientURI;
 
 import stateless4j.PartStates;
 import stateless4j.Triggers;
+import ui.Server;
+import ui.WSMessage;
 
 public class WorkPiece {
 
@@ -100,42 +102,42 @@ public class WorkPiece {
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF)
 				.ignore(Triggers.L4_TRUE).ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE)
-				.onEntry(this::saveToOPCDataItemList);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L1_IN).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L2_TRUE)
 				.ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE).ignore(Triggers.MILLING_OFF)
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L1_TRUE, PartStates.L1_OUT)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L1_OUT).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L3_FALSE).ignore(Triggers.MILLING_OFF)
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L2_FALSE, PartStates.L2_IN)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L2_IN).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE).ignore(Triggers.MILLING_OFF)
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L2_TRUE, PartStates.L2_OUT)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L2_OUT).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.MILLING_OFF)
 				.ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L3_FALSE, PartStates.L3_IN)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L3_IN).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.L3_TRUE).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.MILLING_ON, PartStates.MILLING_ON)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.MILLING_ON).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
@@ -143,28 +145,28 @@ public class WorkPiece {
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.MILLING_OFF, PartStates.MILLING_OFF)
 				.permitReentry(Triggers.MILLING).onEntry(this::handleMilling).onEntry(this::saveToOPCDataItemList)
-				.onEntry(this::setMillingStart);
+				.onEntry(this::setMillingStart).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.MILLING_OFF).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L4_FALSE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L3_TRUE, PartStates.L3_OUT)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::setMillingEnd);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::setMillingEnd).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L3_OUT).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L4_FALSE, PartStates.L4_IN)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L4_IN).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_OFF).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.DRILLING_ON, PartStates.DRILLING_ON)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.DRILLING_ON).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
@@ -172,21 +174,21 @@ public class WorkPiece {
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.L4_TRUE)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE)
 				.permit(Triggers.DRILLING_OFF, PartStates.DRILLING_OFF).permitReentry(Triggers.DRILLING)
-				.onEntry(this::handleDrilling).onEntry(this::saveToOPCDataItemList).onEntry(this::setDrillingStart);
+				.onEntry(this::handleDrilling).onEntry(this::saveToOPCDataItemList).onEntry(this::setDrillingStart).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.DRILLING_OFF).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF)
 				.ignore(Triggers.L5_FALSE).ignore(Triggers.L5_TRUE).permit(Triggers.L4_TRUE, PartStates.L4_OUT)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::setDrillingEnd);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::setDrillingEnd).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L4_OUT).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
 				.ignore(Triggers.MILLING_OFF).ignore(Triggers.MILLING_ON).ignore(Triggers.L3_TRUE)
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF)
 				.ignore(Triggers.L4_TRUE).ignore(Triggers.L5_TRUE).permit(Triggers.L5_FALSE, PartStates.L5)
-				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp);
+				.onEntry(this::saveToOPCDataItemList).onEntry(this::addTimestamp).onEntry(this::sendToUI);
 
 		fsmc.configure(PartStates.L5).ignore(null).ignore(Triggers.L1_FALSE).ignore(Triggers.L1_TRUE)
 				.ignore(Triggers.L2_TRUE).ignore(Triggers.L2_FALSE).ignore(Triggers.L3_FALSE)
@@ -194,7 +196,7 @@ public class WorkPiece {
 				.ignore(Triggers.L4_FALSE).ignore(Triggers.DRILLING_ON).ignore(Triggers.DRILLING_OFF)
 				.ignore(Triggers.L4_TRUE).ignore(Triggers.L5_FALSE).permit(Triggers.L5_TRUE, PartStates.FINISHED)
 				.onEntry(this::saveToOPCDataItemList).onExit(this::finish).onEntry(this::addTimestamp)
-				.onExit(this::addTimestamp);
+				.onExit(this::addTimestamp).onEntry(this::sendToUI);
 
 	}
 
@@ -247,29 +249,23 @@ public class WorkPiece {
 		System.out.println("Drilling time " + calcDrillingTime());
 
 		System.out.println("\n\n\n\n\n");
-		
-		//UI update
-		WSMessage message = new WSMessage(ERPData.getOrderNumber());
-		
-		Gson x = new Gson();
-		String json = x.toJson(message);
-		Server.getInstance().sendToAll(json);
-		System.out.println("Sent to Server; "+json);
-		
 
-		/*SpectralData specData = getSpectralData();
-		while (getSpectralData() == null) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			specData = getSpectralData();
-		}*/
-		
+		/*
+		 * //UI update WSMessage message = new
+		 * WSMessage(ERPData.getOrderNumber()); Gson x = new Gson(); String json
+		 * = x.toJson(message); Server.getInstance().sendToAll(json);
+		 * System.out.println("Sent to Server; "+json);
+		 */
+
+		/*
+		 * SpectralData specData = getSpectralData(); while (getSpectralData()
+		 * == null) { try { Thread.sleep(1000); } catch (InterruptedException e)
+		 * { // TODO Auto-generated catch block e.printStackTrace(); } specData
+		 * = getSpectralData(); }
+		 */
+
 		readFile();
-		System.out.println("Bla bla bla "+specData.getOverallStatus());
+		System.out.println("Bla bla bla " + specData.getOverallStatus());
 
 		String textUri = "mongodb://admin:admin@ds047602.mongolab.com:47602/hortonmongodb";
 
@@ -291,9 +287,11 @@ public class WorkPiece {
 		b.put("customerNumber", ERPData.getCustomerNumber());
 		b.put("materialNumber", ERPData.getMaterialNumber());
 		b.put("avgDrillingHeat", calcAvg(drillingHeatList));
-		b.put("avgDrillingSpeed", calcAvg(drillingSpeedList));
+		System.out.println(calcAvg(drillingHeatList));
+		
+		b.put("avgDrillingSpeed", calcSpeedAvg(drillingSpeedList));
 		b.put("avgMillingHeat", calcAvg(millingHeatList));
-		b.put("avgMillingSpeed", calcAvg(millingSpeedList));
+		b.put("avgMillingSpeed", calcSpeedAvg(millingSpeedList));
 		b.put("maxDrillingHeat", getPeak(drillingHeatList));
 		b.put("maxDrillingSpeed", getPeak(drillingSpeedList));
 		b.put("maxMillingHeat", getPeak(millingHeatList));
@@ -321,14 +319,23 @@ public class WorkPiece {
 		// Insert that object into the collection
 		collection.insert(b);
 		m.close();
-		
+
+	}
+
+	private void sendToUI() {
+		// UI update
+		WSMessage message = new WSMessage(ERPData.getOrderNumber(), ERPData.getCustomerNumber(),
+				ERPData.getMaterialNumber(), tmpData.getItemName(), tmpData.getStatus(), tmpData.getValue());
+		Gson x = new Gson();
+		String json = x.toJson(message);
+		Server.getInstance().sendToAll(json);
+		System.out.println("Sent to Server; " + json);
 	}
 
 	private long getSpecTime(SpectralData specData) {
-		System.out.println("Times: "+specData.getTs_start()+specData.getTs_stop());
+		System.out.println("Times: " + specData.getTs_start() + specData.getTs_stop());
 		return specData.getTs_stop() - specData.getTs_start();
 	}
-
 
 	public SpectralData readFile() {
 		try {
@@ -349,7 +356,7 @@ public class WorkPiece {
 							sb.append(System.lineSeparator());
 							line = br.readLine();
 						}
-						
+
 						br.close();
 						// System.out.println(sb.toString());
 						Gson gson = new Gson();
@@ -383,9 +390,7 @@ public class WorkPiece {
 				e.printStackTrace();
 			}
 			readFile();
-		}
-		else
-		{
+		} else {
 			return specData;
 		}
 		return null;
@@ -465,6 +470,22 @@ public class WorkPiece {
 
 		return end - start;
 	}
+	
+	public static int calcSpeedAvg(ArrayList valueList)
+	{
+		int sum = 0;
+		int counter = 0;
+		
+		for(int i = 0; i < valueList.size()-1; i++)
+		{
+			System.out.println(i +" "+valueList.get(i));
+			sum = sum + (int) valueList.get(i);
+			counter++;
+		}
+		
+		System.out.println(sum+" "+counter+" "+(sum/counter));
+		return (sum/counter);
+	}
 
 	public static double calcAvg(ArrayList valueList) {
 		double sum = 0;
@@ -478,7 +499,7 @@ public class WorkPiece {
 			}
 			counter++;
 		}
-		return sum / counter;
+		return (sum / counter);
 	}
 
 	public static double getPeak(ArrayList valueList) {

@@ -1,4 +1,4 @@
-package model;
+package ui;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;

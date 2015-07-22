@@ -11,8 +11,10 @@
                 <th>Status</th>
             </tr>
             <tr>
-                <td id="orderNumber">Unknown</td>
-                <td id="status">In progress</td>
+                <td id="orderNumber"></td>
+				<td id="customerNumber"></td>
+				<td id="materialNumber"></td>
+                <td id="status"></td>
             </tr>
         </table>
         <script>
@@ -23,6 +25,7 @@
             console.log("Started listening");
             
             client.onmessage = function(e){
+			console.log("Hallo")
                 console.log(e.data);
                 var json = JSON.parse(e.data)
         
@@ -31,7 +34,10 @@
                 console.log(orderNumberCollection.length);
                 
                 document.getElementById("orderNumber").innerHTML = orderNumber;
-                document.getElementById("status").innerHTML = "Finished";
+                document.getElementById("status").innerHTML = (json.itemName + json.value);
+				document.getElementById("customerNumber").innerHTML = json.customerNumber;
+				document.getElementById("materialNumber").innerHTML = json.materialNumber;
+				document.getElementById("materialNumber").innerHTML = json.materialNumber;
             }
             
         </script>
