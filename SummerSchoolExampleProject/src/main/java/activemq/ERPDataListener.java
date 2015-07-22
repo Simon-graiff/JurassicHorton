@@ -33,8 +33,6 @@ public class ERPDataListener implements MessageListener {
 
 	private Unmarshaller _unmarshaller;
 
-	/* private ArrayList<WorkPiece> workpieces; */
-
 	/**
 	 * Default Constructor
 	 */
@@ -50,8 +48,6 @@ public class ERPDataListener implements MessageListener {
 
 	@Override
 	public void onMessage(Message arg0) {
-		// _log.debug("New ERP message arrived!");
-
 		TextMessage tmpMessage = null;
 		ERPData tmpData;
 		if (arg0 instanceof TextMessage) {
@@ -61,29 +57,15 @@ public class ERPDataListener implements MessageListener {
 			return;
 		}
 
-		/*
-		 try { _log.debug(tmpMessage.getText()); } catch (JMSException e) {
-		 e.printStackTrace(); }
-		 */
-
 		try {
 			StringReader sReader = new StringReader(tmpMessage.getText());
 			tmpData = (ERPData) _unmarshaller.unmarshal(sReader);
-			//_log.debug("Object created: " + tmpData.toString());
-			//System.out.println(tmpData.getMaterialNumber());
-System.out.println("********** START OF "+tmpData.getOrderNumber()+ " *******************");
+			System.out.println("********** START OF "+tmpData.getOrderNumber()+ " *******************");
 			WorkPiece tmpWorkPiece = new WorkPiece(tmpData);
 			WorkPieceList.list.add(tmpWorkPiece);
-
-			/*
-			 * for (int i=0;i<workpieces.size();i++) {
-			 * workpieces.get(i).getFsm().fire(trigger); }
-			 */
-
-		} catch (Exception fuckYou) {
-			fuckYou.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		// Do something with the erp data!
-
 	}
 }
